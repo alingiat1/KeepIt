@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="edittext_background" />
+    <drawable name="pink_button" />
+    <drawable name="waves_bottom" />
+    <drawable name="register_button" />
+</resources>

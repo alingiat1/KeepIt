@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "638132970759",
+    "project_id": "keepit-3faba",
+    "storage_bucket": "keepit-3faba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:638132970759:android:7115454ad3d041162991a2",
+        "android_client_info": {
+          "package_name": "com.example.keepit"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgoDSSYDM6krKpvv_Ne-u3SrAYSHo2LGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

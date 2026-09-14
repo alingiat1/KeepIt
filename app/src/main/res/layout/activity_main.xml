@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFF5FA">
+
+    <!-- המסגרת של המסך -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="12dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp"
+        android:paddingTop="65dp"
+        android:paddingBottom="30dp"
+        android:background="@drawable/screen_background">
+
+        <!-- לוגו -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="KeepIt ♥"
+            android:textColor="#E91E83"
+            android:textSize="43sp"
+            android:textStyle="bold"
+            android:fontFamily="sans"
+            android:layout_marginBottom="6dp" />
+
+        <!-- משפט -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="שומרת היום, זוכרת מחר"
+            android:textColor="#D62A76"
+            android:textSize="21sp"
+            android:layout_marginBottom="55dp" />
+
+        <!-- שם משתמש -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="♙"
+                android:textColor="#263238"
+                android:textSize="27sp"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/usernameEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="שם משתמש"
+                android:textColor="#555555"
+                android:textColorHint="#A5A5B0"
+                android:textSize="18sp"
+                android:gravity="center_vertical|right"
+                android:background="@android:color/transparent"
+                android:paddingStart="12dp"
+                android:paddingEnd="5dp"
+                android:inputType="text" />
+
+        </LinearLayout>
+
+        <!-- סיסמה -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="68dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/edittext_background"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:layout_marginBottom="28dp">
+
+            <TextView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:text="♙"
+                android:textColor="#263238"
+                android:textSize="25sp"
+                android:gravity="center" />
+
+            <EditText
+                android:id="@+id/passwordEditText"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="סיסמה"
+                android:textColor="#555555"
+                android:textColorHint="#A5A5B0"
+                android:textSize="18sp"
+                android:gravity="center_vertical|right"
+                android:background="@android:color/transparent"
+                android:paddingStart="12dp"
+                android:paddingEnd="5dp"
+                android:inputType="textPassword" />
+
+        </LinearLayout>
+
+        <!-- התחברות -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="66dp"
+            android:text="התחברות"
+            android:textColor="#FFFFFF"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:background="@drawable/pink_button"
+            android:layout_marginBottom="38dp" />
+
+        <!-- אין לך חשבון -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="אין לך חשבון?"
+            android:textColor="#D62A76"
+            android:textSize="20sp"
+            android:layout_marginBottom="10dp" />
+
+        <!-- הרשמה -->
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="62dp"
+            android:text="הרשמה"
+            android:textColor="#D62A76"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textAllCaps="false"
+            android:background="@drawable/register_button" />
+
+    </LinearLayout>
+
+    <!-- גלים בתחתית -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:layout_gravity="bottom"
+        android:src="@drawable/waves_bottom"
+        android:scaleType="fitXY"
+        android:alpha="0.95" />
+
+</FrameLayout>

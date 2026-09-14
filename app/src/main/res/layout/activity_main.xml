@@ -1,159 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF5FA">
+    android:background="#FFF0F5"
+    tools:context=".MainActivity">
 
-    <!-- המסגרת של המסך -->
-    <LinearLayout
+    <!-- שורת חיבור תמונת הרקע -->
+    <ImageView
+        android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="12dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/pink" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:paddingStart="30dp"
-        android:paddingEnd="30dp"
-        android:paddingTop="65dp"
-        android:paddingBottom="30dp"
-        android:background="@drawable/screen_background">
+        android:padding="32dp">
 
-        <!-- לוגו -->
+        <!-- כותרת ראשית -->
         <TextView
+            android:id="@+id/titleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="KeepIt ♥"
-            android:textColor="#E91E83"
-            android:textSize="43sp"
-            android:textStyle="bold"
-            android:fontFamily="sans"
-            android:layout_marginBottom="6dp" />
+            android:text="KeepIt ♡"
+            android:textColor="#E91E63"
+            android:textSize="40sp"
+            android:textStyle="bold" />
 
-        <!-- משפט -->
+        <!-- סלוגן -->
         <TextView
+            android:id="@+id/subtitleText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="36dp"
             android:text="שומרת היום, זוכרת מחר"
-            android:textColor="#D62A76"
-            android:textSize="21sp"
-            android:layout_marginBottom="55dp" />
+            android:textColor="#D81B60"
+            android:textSize="18sp" />
 
-        <!-- שם משתמש -->
-        <LinearLayout
+        <!-- שדה קלט: שם משתמש -->
+        <EditText
+            android:id="@+id/usernameInput"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/edittext_background"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_marginBottom="16dp">
+            android:hint="שם משתמש"
+            android:inputType="textPersonName"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAlignment="viewStart"
+            android:textColorHint="#9E9E9E" />
 
-            <TextView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:text="♙"
-                android:textColor="#263238"
-                android:textSize="27sp"
-                android:gravity="center" />
-
-            <EditText
-                android:id="@+id/usernameEditText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="שם משתמש"
-                android:textColor="#555555"
-                android:textColorHint="#A5A5B0"
-                android:textSize="18sp"
-                android:gravity="center_vertical|right"
-                android:background="@android:color/transparent"
-                android:paddingStart="12dp"
-                android:paddingEnd="5dp"
-                android:inputType="text" />
-
-        </LinearLayout>
-
-        <!-- סיסמה -->
-        <LinearLayout
+        <!-- שדה קלט: סיסמה -->
+        <EditText
+            android:id="@+id/passwordInput"
             android:layout_width="match_parent"
-            android:layout_height="68dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
+            android:layout_height="50dp"
+            android:layout_marginBottom="24dp"
             android:background="@drawable/edittext_background"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:layout_marginBottom="28dp">
+            android:hint="סיסמה"
+            android:inputType="textPassword"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:textAlignment="viewStart"
+            android:textColorHint="#9E9E9E" />
 
-            <TextView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:text="♙"
-                android:textColor="#263238"
-                android:textSize="25sp"
-                android:gravity="center" />
-
-            <EditText
-                android:id="@+id/passwordEditText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="סיסמה"
-                android:textColor="#555555"
-                android:textColorHint="#A5A5B0"
-                android:textSize="18sp"
-                android:gravity="center_vertical|right"
-                android:background="@android:color/transparent"
-                android:paddingStart="12dp"
-                android:paddingEnd="5dp"
-                android:inputType="textPassword" />
-
-        </LinearLayout>
-
-        <!-- התחברות -->
+        <!-- כפתור התחברות -->
         <Button
             android:id="@+id/loginButton"
             android:layout_width="match_parent"
-            android:layout_height="66dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/pink_button"
+            android:backgroundTint="#E91E63"
             android:text="התחברות"
             android:textColor="#FFFFFF"
-            android:textSize="21sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:background="@drawable/pink_button"
-            android:layout_marginBottom="38dp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
-        <!-- אין לך חשבון -->
+        <!-- טקסט שאלה -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="אין לך חשבון?"
-            android:textColor="#D62A76"
-            android:textSize="20sp"
-            android:layout_marginBottom="10dp" />
+            android:textColor="#E91E63"
+            android:textSize="16sp" />
 
-        <!-- הרשמה -->
+        <!-- כפתור הרשמה -->
         <Button
             android:id="@+id/registerButton"
             android:layout_width="match_parent"
-            android:layout_height="62dp"
+            android:layout_height="50dp"
+            android:background="@drawable/register_button"
             android:text="הרשמה"
-            android:textColor="#D62A76"
-            android:textSize="21sp"
-            android:textStyle="bold"
-            android:textAllCaps="false"
-            android:background="@drawable/register_button" />
+            android:textColor="#E91E63"
+            android:backgroundTint="#FFF0F1"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
-    <!-- גלים בתחתית -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="190dp"
-        android:layout_gravity="bottom"
-        android:src="@drawable/waves_bottom"
-        android:scaleType="fitXY"
-        android:alpha="0.95" />
-
-</FrameLayout>
+</RelativeLayout>

@@ -5,9 +5,7 @@ plugins {
 
 android {
     namespace = "com.example.keepit"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.keepit"
@@ -39,10 +37,19 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.firebase.auth)
+
+    // Firebase BOM (משתמש בגרסה מרכזית מנוהלת)
+    implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
+
+    // ספריות פיירבייס נדרשות
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore") // <-- הוספנו את פיירבייס פיירסטור שפתר את השגיאה!
+
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.firebase.firestore)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

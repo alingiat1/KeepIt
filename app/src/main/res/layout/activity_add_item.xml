@@ -48,32 +48,36 @@
                 android:textStyle="bold"
                 android:fontFamily="sans-serif-medium" />
 
-            <View android:layout_width="48dp" android:layout_height="48dp"/>
+            <View
+                android:layout_width="48dp"
+                android:layout_height="48dp" />
         </LinearLayout>
 
-        <!-- אזור הוספת תמונה (עם ה-id החשוב cardSelectImage) -->
+        <!-- אזור בחירת תמונה -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardSelectImage"
             android:layout_width="match_parent"
-            android:layout_height="110dp"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:cardBackgroundColor="#FFE4EC"
+            android:layout_height="200dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFE4EC">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center">
+                android:gravity="center"
+                android:padding="8dp">
 
                 <ImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
                     android:src="@android:drawable/ic_menu_camera"
-                    app:tint="#D81B60" />
+                    app:tint="#D81B60"
+                    android:contentDescription="בחירת תמונה" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -83,6 +87,14 @@
                     android:textSize="14sp"
                     android:textStyle="bold"
                     android:layout_marginTop="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="לחצי כאן לבחירה מהגלריה או לצילום"
+                    android:textColor="#AD1457"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -198,7 +210,7 @@
             android:layout_height="70dp"
             android:background="@android:drawable/editbox_background_normal"
             android:backgroundTint="#FFFFFF"
-            android:hint="כתוב כאן..."
+            android:hint="כתבי כאן..."
             android:gravity="top|start"
             android:textColor="#333333"
             android:textColorHint="#B0BEC5"
@@ -207,30 +219,32 @@
             android:layout_marginBottom="12dp"
             android:elevation="1dp" />
 
-        <!-- כרטיס תזכורת -->
+        <!-- תזכורת -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardReminder"
             android:layout_width="match_parent"
             android:layout_height="55dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="1dp"
-            app:cardBackgroundColor="#FFFFFF"
             android:layout_marginBottom="20dp"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="1dp"
+            app:cardBackgroundColor="#FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="16dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:src="@android:drawable/ic_lock_idle_alarm"
-                    app:tint="#D81B60" />
+                    app:tint="#D81B60"
+                    android:contentDescription="תזכורת" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -258,7 +272,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- כפתור שמירה -->
+        <!-- שמירה -->
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"

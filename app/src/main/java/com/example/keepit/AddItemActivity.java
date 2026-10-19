@@ -1,24 +1,40 @@
+
 package com.example.keepit;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,12 +47,16 @@ public class AddItemActivity extends AppCompatActivity {
     private CardView cardReminder, cardSelectImage;
     private TextView tvReminderTime;
     private Button btnSave;
+    private ImageView imagePreview;
 
     private FirebaseFirestore db;
-    private Uri imageUri = null;
+    private FirebaseAuth mAuth;
 
-    private ActivityResultLauncher<Intent> galleryLauncher;
-    private ActivityResultLauncher<Intent> cameraLauncher;
+    // שם קובץ התמונה שנשמר באחסון המקומי
+    private String imageFileName = null;
+
+    private ActivityResultLauncher<String> galleryLauncher;
+    private ActivityResultLauncher<Void> cameraLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +64,7 @@ public class AddItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_item);
 
         db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
 
         backButton = findViewById(R.id.backButton);
         etTitle = findViewById(R.id.etTitle);
@@ -56,11 +77,25 @@ public class AddItemActivity extends AppCompatActivity {
         cardSelectImage = findViewById(R.id.cardSelectImage);
         btnSave = findViewById(R.id.btnSave);
 
-        String[] categories = {"מתכונים", "לקנות", "מתנות", "רעיונות", "מקומות"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, categories);
+        db = FirebaseFirestore.getInstance();
+        mAuth = FirebaseAuth.getInstance();
+
+        createImagePreview();
+
+        String[] categories = {
+                "מתכונים", "לקנות", "מתנות", "רעיונות", "מקומות"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_spinner_dropdown_item,
+                categories
+        );
         spinnerCategory.setAdapter(adapter);
 
-        String incomingCategory = getIntent().getStringExtra("CATEGORY_NAME");
+        String incomingCategory =
+                getIntent().getStringExtra("CATEGORY_NAME");
+
         if (incomingCategory != null) {
             for (int i = 0; i < categories.length; i++) {
                 if (categories[i].equals(incomingCategory)) {
@@ -72,99 +107,328 @@ public class AddItemActivity extends AppCompatActivity {
 
         backButton.setOnClickListener(v -> finish());
 
+        // בחירת תמונה מהגלריה
         galleryLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                        imageUri = result.getData().getData();
-                        Toast.makeText(this, "התמונה נבחרה בהצלחה!", Toast.LENGTH_SHORT).show();
+                new ActivityResultContracts.GetContent(),
+                uri -> {
+                    if (uri != null) {
+                        saveGalleryImage(uri);
                     }
                 }
         );
 
+        // צילום תמונה במצלמה
         cameraLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Toast.makeText(this, "התצלום צולם בהצלחה!", Toast.LENGTH_SHORT).show();
+                new ActivityResultContracts.TakePicturePreview(),
+                bitmap -> {
+                    if (bitmap != null) {
+                        saveCameraImage(bitmap);
                     }
                 }
         );
 
         cardSelectImage.setOnClickListener(v -> {
-            CharSequence[] options = {"בחירה מהגלריה", "צילום תמונה במצלמה"};
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("הוספת תמונה");
-            builder.setItems(options, (dialog, which) -> {
-                if (which == 0) {
-                    Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    galleryLauncher.launch(intent);
-                } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    cameraLauncher.launch(intent);
-                }
-            });
-            builder.show();
+            String[] options = {
+                    "בחירה מהגלריה",
+                    "צילום תמונה במצלמה",
+                    "הסרת התמונה"
+            };
+
+            new AlertDialog.Builder(this)
+                    .setTitle("הוספת תמונה")
+                    .setItems(options, (dialog, which) -> {
+                        if (which == 0) {
+                            galleryLauncher.launch("image/*");
+                        } else if (which == 1) {
+                            cameraLauncher.launch(null);
+                        } else {
+                            removeSelectedImage();
+                        }
+                    })
+                    .show();
         });
 
         cardReminder.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-            DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year1, month1, dayOfMonth) -> {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
-                    String timeFormatted = String.format("%02d:%02d", hourOfDay, minute);
-                    String dateFormatted = String.format("%02d.%02d.%d", dayOfMonth, (month1 + 1), year1);
-                    tvReminderTime.setText(dateFormatted + " - " + timeFormatted);
-                }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
-                timePickerDialog.show();
-            }, year, month, day);
+            DatePickerDialog datePickerDialog =
+                    new DatePickerDialog(
+                            this,
+                            (view, year, month, day) -> {
+                                TimePickerDialog timePickerDialog =
+                                        new TimePickerDialog(
+                                                this,
+                                                (view1, hour, minute) -> {
+                                                    String formattedDate =
+                                                            String.format(
+                                                                    "%02d.%02d.%d",
+                                                                    day,
+                                                                    month + 1,
+                                                                    year
+                                                            );
+
+                                                    String formattedTime =
+                                                            String.format(
+                                                                    "%02d:%02d",
+                                                                    hour,
+                                                                    minute
+                                                            );
+
+                                                    tvReminderTime.setText(
+                                                            formattedDate
+                                                                    + " - "
+                                                                    + formattedTime
+                                                    );
+                                                },
+                                                calendar.get(Calendar.HOUR_OF_DAY),
+                                                calendar.get(Calendar.MINUTE),
+                                                true
+                                        );
+
+                                timePickerDialog.show();
+                            },
+                            calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH),
+                            calendar.get(Calendar.DAY_OF_MONTH)
+                    );
+
             datePickerDialog.show();
         });
 
-        // כפתור שמירה עם מניעת לחיצות כפולות
-        btnSave.setOnClickListener(v -> {
-            String title = etTitle.getText().toString().trim();
-            String category = spinnerCategory.getSelectedItem().toString();
-            String price = etPrice.getText().toString().trim();
-            String link = etLink.getText().toString().trim();
-            String note = etNote.getText().toString().trim();
-            String reminder = tvReminderTime.getText().toString();
+        btnSave.setOnClickListener(v -> saveItem());
+    }
 
-            if (title.isEmpty()) {
-                Toast.makeText(this, "נא להזין כותרת לפריט", Toast.LENGTH_SHORT).show();
-            } else {
-                // השבתת הכפתור מיד כדי למנוע שמירות כפולות בלחיצה מהירה
-                btnSave.setEnabled(false);
+    // יצירת תצוגה מקדימה בתוך כרטיס בחירת התמונה
+    private void createImagePreview() {
+        if (!(cardSelectImage.getChildAt(0) instanceof ViewGroup)) {
+            Toast.makeText(
+                    this,
+                    "לא ניתן להציג תצוגת תמונה. צריך לבדוק את קובץ ה-XML.",
+                    Toast.LENGTH_LONG
+            ).show();
+            return;
+        }
 
-                Map<String, Object> itemData = new HashMap<>();
-                itemData.put("title", title);
-                itemData.put("category", category);
-                itemData.put("price", price);
-                itemData.put("link", link);
-                itemData.put("note", note);
-                itemData.put("reminder", reminder);
-                if (imageUri != null) {
-                    itemData.put("imageUri", imageUri.toString());
-                }
+        ViewGroup content = (ViewGroup) cardSelectImage.getChildAt(0);
 
-                db.collection("items")
-                        .add(itemData)
-                        .addOnSuccessListener(documentReference -> {
-                            Toast.makeText(this, "הפריט נשמר בהצלחה בפיירבייס!", Toast.LENGTH_SHORT).show();
-                            Intent resultIntent = new Intent();
-                            resultIntent.putExtra("ITEM_TITLE", title);
-                            setResult(RESULT_OK, resultIntent);
-                            finish();
-                        })
-                        .addOnFailureListener(e -> {
-                            // במקרה של שגיאה, מחזירים את האפשרות ללחוץ שוב
-                            btnSave.setEnabled(true);
-                            Toast.makeText(this, "שגיאה בשמירה: " + e.getMessage(), Toast.LENGTH_LONG).show();
-                        });
+        imagePreview = new ImageView(this);
+        imagePreview.setLayoutParams(
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
+                        dpToPx(180)
+                )
+        );
+
+        imagePreview.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imagePreview.setVisibility(View.GONE);
+
+        // התמונה תופיע בתחילת התוכן של הכרטיס
+        content.addView(imagePreview, 0);
+    }
+
+    private void saveGalleryImage(Uri uri) {
+        try (InputStream input = getContentResolver().openInputStream(uri)) {
+            if (input == null) {
+                throw new Exception("לא ניתן לקרוא את התמונה");
             }
-        });
+
+            File destination = createImageFile();
+            copyStream(input, destination);
+
+            imageFileName = destination.getName();
+            showImagePreview(destination);
+
+            Toast.makeText(
+                    this,
+                    "התמונה נשמרה במכשיר!",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } catch (Exception e) {
+            Toast.makeText(
+                    this,
+                    "לא ניתן לשמור את התמונה: " + e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+    }
+
+    private void saveCameraImage(Bitmap bitmap) {
+        try {
+            File destination = createImageFile();
+
+            try (OutputStream output =
+                         new FileOutputStream(destination)) {
+                boolean success = bitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        90,
+                        output
+                );
+
+                if (!success) {
+                    throw new Exception("שמירת התמונה נכשלה");
+                }
+            }
+
+            imageFileName = destination.getName();
+            showImagePreview(destination);
+
+            Toast.makeText(
+                    this,
+                    "התמונה צולמה ונשמרה במכשיר!",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        } catch (Exception e) {
+            Toast.makeText(
+                    this,
+                    "לא ניתן לשמור את התמונה: " + e.getMessage(),
+                    Toast.LENGTH_LONG
+            ).show();
+        }
+    }
+
+    private File createImageFile() throws Exception {
+        File directory = new File(getFilesDir(), "item_images");
+
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new Exception("לא ניתן ליצור תיקיית תמונות");
+        }
+
+        return File.createTempFile(
+                "item_",
+                ".jpg",
+                directory
+        );
+    }
+
+    private void copyStream(InputStream input, File destination)
+            throws Exception {
+        try (OutputStream output = new FileOutputStream(destination)) {
+            byte[] buffer = new byte[8192];
+            int length;
+
+            while ((length = input.read(buffer)) != -1) {
+                output.write(buffer, 0, length);
+            }
+        }
+    }
+
+    private void showImagePreview(File file) {
+        if (imagePreview == null) {
+            return;
+        }
+
+        Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+        if (bitmap != null) {
+            imagePreview.setImageBitmap(bitmap);
+            imagePreview.setVisibility(View.VISIBLE);
+            imagePreview.setContentDescription("תמונה שנבחרה לפריט");
+        }
+    }
+
+    private void removeSelectedImage() {
+        if (imageFileName != null) {
+            File file = new File(
+                    new File(getFilesDir(), "item_images"),
+                    imageFileName
+            );
+
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+
+        imageFileName = null;
+
+        if (imagePreview != null) {
+            imagePreview.setImageDrawable(null);
+            imagePreview.setVisibility(View.GONE);
+        }
+
+        Toast.makeText(
+                this,
+                "התמונה הוסרה",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    private int dpToPx(int dp) {
+        return Math.round(
+                dp * getResources().getDisplayMetrics().density
+        );
+    }
+
+    private void saveItem() {
+        String title = etTitle.getText().toString().trim();
+        String category = spinnerCategory.getSelectedItem().toString();
+        String price = etPrice.getText().toString().trim();
+        String link = etLink.getText().toString().trim();
+        String note = etNote.getText().toString().trim();
+        String reminder = tvReminderTime.getText().toString();
+
+        if (title.isEmpty()) {
+            etTitle.setError("נא להזין כותרת לפריט");
+            etTitle.requestFocus();
+            return;
+        }
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) {
+            Toast.makeText(
+                    this,
+                    "יש להתחבר לפני שמירת פריט",
+                    Toast.LENGTH_SHORT
+            ).show();
+            return;
+        }
+
+        btnSave.setEnabled(false);
+
+        Map<String, Object> itemData = new HashMap<>();
+
+        itemData.put("userId", currentUser.getUid());
+        itemData.put("title", title);
+        itemData.put("category", category);
+        itemData.put("price", price);
+        itemData.put("link", link);
+        itemData.put("note", note);
+        itemData.put("reminder", reminder);
+
+        // שומרים את שם הקובץ ב-Firestore, לא את נתיב הגלריה
+        if (imageFileName != null) {
+            itemData.put("imageFileName", imageFileName);
+        }
+
+        db.collection("items")
+                .add(itemData)
+                .addOnSuccessListener(documentReference -> {
+                    Toast.makeText(
+                            this,
+                            "הפריט נשמר בהצלחה!",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("ITEM_TITLE", title);
+                    resultIntent.putExtra(
+                            "ITEM_ID",
+                            documentReference.getId()
+                    );
+
+                    setResult(RESULT_OK, resultIntent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    btnSave.setEnabled(true);
+
+                    Toast.makeText(
+                            this,
+                            "שגיאה בשמירה: " + e.getMessage(),
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
     }
 }

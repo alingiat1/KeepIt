@@ -6,7 +6,6 @@
     android:orientation="vertical"
     android:background="#FFF5F8">
 
-    <!-- תוכן ראשי שגלול במידת הצורך -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -20,7 +19,7 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- סרגל עליון: לוגו ואייקון פרופיל -->
+            <!-- כותרת -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,7 +52,7 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <!-- שדה חיפוש -->
+            <!-- חיפוש -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -82,7 +81,7 @@
                     android:fontFamily="sans-serif-medium" />
             </LinearLayout>
 
-            <!-- רשת קטגוריות -->
+            <!-- קטגוריות -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,7 +89,6 @@
                 android:alignmentMode="alignMargins"
                 android:columnOrderPreserved="false">
 
-                <!-- קטגוריה 1: לקנות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardShopping"
                     android:layout_width="0dp"
@@ -126,7 +124,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- קטגוריה 2: מקומות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPlaces"
                     android:layout_width="0dp"
@@ -162,7 +159,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- קטגוריה 3: מתנות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardGifts"
                     android:layout_width="0dp"
@@ -198,7 +194,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- קטגוריה 4: רעיונות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardIdeas"
                     android:layout_width="0dp"
@@ -234,7 +229,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- קטגוריה 5: מתכונים -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardRecipes"
                     android:layout_width="0dp"
@@ -270,7 +264,6 @@
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
-                <!-- קטגוריה 6: הוספת קטגוריה -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/addCategoryCard"
                     android:layout_width="0dp"
@@ -309,11 +302,10 @@
                 </androidx.cardview.widget.CardView>
 
             </GridLayout>
-
         </LinearLayout>
     </ScrollView>
 
-    <!-- סרגל ניווט תחתון -->
+    <!-- ניווט תחתון -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="65dp"
@@ -321,6 +313,7 @@
         android:orientation="horizontal"
         android:elevation="12dp">
 
+        <!-- בית -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -344,6 +337,7 @@
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
+        <!-- מועדפים -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -366,12 +360,16 @@
                 android:fontFamily="sans-serif-medium" />
         </LinearLayout>
 
+        <!-- פרופיל: מחובר ל-ProfileActivity דרך HomeActivity -->
         <LinearLayout
+            android:id="@+id/navProfile"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
 
             <ImageView
                 android:layout_width="24dp"

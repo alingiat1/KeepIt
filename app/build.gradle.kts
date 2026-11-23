@@ -1,3 +1,4 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
@@ -26,6 +27,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -39,18 +41,20 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
 
-    // Firebase BOM (משתמש בגרסה מרכזית מנוהלת)
+    // Firebase BOM
     implementation(platform("com.google.firebase:firebase-bom:33.10.0"))
 
-    // ספריות פיירבייס נדרשות
+    // Firebase
     implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore") // <-- הוספנו את פיירבייס פיירסטור שפתר את השגיאה!
+    implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-storage")
 
+    // Credentials
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
-    implementation(libs.firebase.firestore)
 
+    // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

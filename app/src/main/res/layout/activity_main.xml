@@ -1,111 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF0F5"
+    android:background="#FFF8FA"
     tools:context=".MainActivity">
 
-    <!-- שורת חיבור תמונת הרקע -->
+    <!-- תמונת הרקע העננית -->
     <ImageView
         android:id="@+id/backgroundImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/pink" />
+        android:src="@drawable/login_clouds"
+        android:contentDescription="@null" />
 
-    <LinearLayout
+    <!-- כרטיס התחברות שקוף ורך -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/loginCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="32dp">
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="155dp"
+        app:cardBackgroundColor="#00FFFFFF"
+        app:cardCornerRadius="26dp"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="false">
 
-        <!-- כותרת ראשית -->
-        <TextView
-            android:id="@+id/titleText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="KeepIt ♡"
-            android:textColor="#E91E63"
-            android:textSize="40sp"
-            android:textStyle="bold" />
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layoutDirection="rtl"
+            android:background="@drawable/login_card_glass"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
+            android:paddingTop="19dp"
+            android:paddingBottom="19dp">
 
-        <!-- סלוגן -->
-        <TextView
-            android:id="@+id/subtitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="36dp"
-            android:text="שומרת היום, זוכרת מחר"
-            android:textColor="#D81B60"
-            android:textSize="18sp" />
+            <!-- ברוכה הבאה -->
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ברוכה הבאה ♡"
+                android:textColor="#A65372"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp" />
 
-        <!-- שדה קלט: אימייל (שם משתמש) -->
-        <EditText
-            android:id="@+id/usernameInput"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/edittext_background"
-            android:hint="אימייל"
-            android:inputType="textEmailAddress"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAlignment="viewStart"
-            android:textColorHint="#9E9E9E" />
+            <!-- משפט קצר -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="כל הדברים שאת אוהבת, במקום אחד"
+                android:textColor="#B88A9B"
+                android:textSize="12sp"
+                android:layout_marginBottom="16dp" />
 
-        <!-- שדה קלט: סיסמה -->
-        <EditText
-            android:id="@+id/passwordInput"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="24dp"
-            android:background="@drawable/edittext_background"
-            android:hint="סיסמה"
-            android:inputType="textPassword"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            android:textAlignment="viewStart"
-            android:textColorHint="#9E9E9E" />
+            <!-- אימייל -->
+            <EditText
+                android:id="@+id/usernameInput"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/login_input_background"
+                android:hint="אימייל"
+                android:inputType="textEmailAddress"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textAlignment="viewStart"
+                android:textColor="#654653"
+                android:textColorHint="#B89AA7"
+                android:textSize="14sp"
+                android:singleLine="true" />
 
-        <!-- כפתור התחברות -->
-        <Button
-            android:id="@+id/loginButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/pink_button"
-            android:backgroundTint="#E91E63"
-            android:text="התחברות"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            <!-- סיסמה -->
+            <EditText
+                android:id="@+id/passwordInput"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="14dp"
+                android:background="@drawable/login_input_background"
+                android:hint="סיסמה"
+                android:inputType="textPassword"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:textAlignment="viewStart"
+                android:textColor="#654653"
+                android:textColorHint="#B89AA7"
+                android:textSize="14sp"
+                android:singleLine="true" />
 
-        <!-- טקסט שאלה -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="אין לך חשבון?"
-            android:textColor="#E91E63"
-            android:textSize="16sp" />
+            <!-- כפתור התחברות -->
+            <Button
+                android:id="@+id/loginButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="12dp"
+                android:background="@drawable/login_primary_button"
+                android:backgroundTint="@null"
+                android:text="התחברות"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:stateListAnimator="@null" />
 
-        <!-- כפתור הרשמה -->
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/register_button"
-            android:text="הרשמה"
-            android:textColor="#E91E63"
-            android:backgroundTint="#FFF0F1"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            <!-- טקסט הרשמה -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:text="עדיין אין לך חשבון?"
+                android:textColor="#A77B8D"
+                android:textSize="13sp" />
 
-    </LinearLayout>
+            <!-- כפתור הרשמה -->
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="match_parent"
+                android:layout_height="43dp"
+                android:background="@drawable/register_button"
+                android:backgroundTint="@null"
+                android:text="הרשמה"
+                android:textColor="#B64F78"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:minHeight="0dp"
+                android:minWidth="0dp"
+                android:padding="0dp"
+                android:stateListAnimator="@null" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

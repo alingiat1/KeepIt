@@ -2,279 +2,636 @@
 package com.example.keepit;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
+import androidx.core.view.ViewCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CategoryActivity extends AppCompatActivity {
 
-    private TextView categoryTitle;
-    private View backButton;
-    private ImageView topActionIcon;
-    private Button addItemButton;
     private LinearLayout itemsContainer;
+    private Button addItemButton;
 
-    private ActivityResultLauncher<Intent> itemLauncher;
-
-    private FirebaseFirestore db;
-    private FirebaseAuth mAuth;
+    private TextView filterAll;
+    private TextView filterFavorites;
 
     private String categoryName;
+    private boolean showingFavorites = false;
+
+    private FirebaseFirestore db;
+    private FirebaseAuth auth;
+
+    private final List<DocumentSnapshot> itemList =
+            new ArrayList<>();
+
+    private int dp(float value) {
+        return (int) (value *
+                getResources().getDisplayMetrics().density);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        db = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
-
-        categoryTitle = findViewById(R.id.categoryTitle);
-        backButton = findViewById(R.id.backButton);
-        topActionIcon = findViewById(R.id.topActionIcon);
-        addItemButton = findViewById(R.id.addItemButton);
         itemsContainer = findViewById(R.id.itemsContainer);
+        addItemButton = findViewById(R.id.addItemButton);
 
-        categoryName = getIntent().getStringExtra("CATEGORY_NAME");
+        filterAll = findViewById(R.id.filterAll);
+        filterFavorites = findViewById(R.id.filterFavorites);
 
-        if (categoryName != null) {
-            categoryTitle.setText(categoryName);
+        db = FirebaseFirestore.getInstance();
+        auth = FirebaseAuth.getInstance();
+
+        categoryName =
+                getIntent().getStringExtra("CATEGORY_NAME");
+
+        TextView categoryTitle =
+                findViewById(R.id.categoryTitle);
+
+        if (categoryName != null &&
+                !categoryName.isEmpty()) {
+            categoryTitle.setText(categoryName + " ♡");
         }
 
-        itemLauncher = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> loadItemsFromFirebase()
-        );
+        findViewById(R.id.backButton)
+                .setOnClickListener(v -> finish());
 
-        backButton.setOnClickListener(v -> finish());
-
-        if (topActionIcon != null) {
-            topActionIcon.setOnClickListener(v -> finish());
-        }
-
-        addItemButton.setOnClickListener(v -> openAddItemScreen());
-
-        loadItemsFromFirebase();
-    }
-
-    private void openAddItemScreen() {
-        Intent intent = new Intent(
-                CategoryActivity.this,
-                AddItemActivity.class
-        );
-
-        intent.putExtra("CATEGORY_NAME", categoryName);
-        itemLauncher.launch(intent);
-    }
-
-    private void loadItemsFromFirebase() {
-
-        itemsContainer.removeAllViews();
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) {
-            Toast.makeText(
-                    this,
-                    "יש להתחבר כדי לראות פריטים",
-                    Toast.LENGTH_SHORT
-            ).show();
-            return;
-        }
-
-        if (categoryName == null || categoryName.isEmpty()) {
-            Toast.makeText(
-                    this,
-                    "לא נבחרה קטגוריה",
-                    Toast.LENGTH_SHORT
-            ).show();
-            return;
-        }
-
-        db.collection("items")
-                .whereEqualTo("userId", currentUser.getUid())
-                .whereEqualTo("category", categoryName)
-                .get()
-                .addOnSuccessListener(snapshot -> {
-
-                    itemsContainer.removeAllViews();
-
-                    for (QueryDocumentSnapshot document : snapshot) {
-
-                        String title = document.getString("title");
-                        String imageFileName =
-                                document.getString("imageFileName");
-
-                        if (title != null) {
-                            addNewItemCard(
-                                    title,
-                                    imageFileName,
-                                    document.getId()
-                            );
-                        }
-                    }
-
-                    if (snapshot.isEmpty()) {
+        findViewById(R.id.topActionIcon)
+                .setOnClickListener(v ->
                         Toast.makeText(
                                 this,
-                                "עדיין אין פריטים בקטגוריה הזאת",
+                                categoryName,
                                 Toast.LENGTH_SHORT
-                        ).show();
-                    }
+                        ).show()
+                );
+
+        setupAddButton();
+        setupFilterButtons();
+
+        addItemButton.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    CategoryActivity.this,
+                    AddItemActivity.class
+            );
+
+            intent.putExtra(
+                    "CATEGORY_NAME",
+                    categoryName
+            );
+
+            startActivityForResult(intent, 100);
+        });
+    }
+
+    private void setupAddButton() {
+
+        GradientDrawable pinkBackground =
+                new GradientDrawable(
+                        GradientDrawable.Orientation.LEFT_RIGHT,
+                        new int[]{
+                                Color.parseColor("#D84C78"),
+                                Color.parseColor("#B92F5D")
+                        }
+                );
+
+        pinkBackground.setCornerRadius(dp(40));
+
+        addItemButton.setBackgroundTintList(null);
+
+        ViewCompat.setBackgroundTintList(
+                addItemButton,
+                null
+        );
+
+        addItemButton.setBackground(pinkBackground);
+
+        addItemButton.setBackgroundTintList(null);
+
+        ViewCompat.setBackgroundTintList(
+                addItemButton,
+                null
+        );
+
+        addItemButton.setTextColor(Color.WHITE);
+        addItemButton.setTextSize(20);
+
+        addItemButton.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+
+        addItemButton.setAllCaps(false);
+        addItemButton.setText("+  הוספת פריט");
+        addItemButton.setElevation(dp(4));
+    }
+
+    private void setupFilterButtons() {
+
+        filterAll.setOnClickListener(v -> {
+            showingFavorites = false;
+            updateFilterStyle();
+            showItems();
+        });
+
+        filterFavorites.setOnClickListener(v -> {
+            showingFavorites = true;
+            updateFilterStyle();
+            showItems();
+        });
+
+        updateFilterStyle();
+    }
+
+    private void updateFilterStyle() {
+
+        if (showingFavorites) {
+            setSelectedFilter(filterFavorites);
+            setUnselectedFilter(filterAll);
+        } else {
+            setSelectedFilter(filterAll);
+            setUnselectedFilter(filterFavorites);
+        }
+    }
+
+    private void setSelectedFilter(TextView filter) {
+
+        GradientDrawable background =
+                new GradientDrawable(
+                        GradientDrawable.Orientation.LEFT_RIGHT,
+                        new int[]{
+                                Color.parseColor("#D84C78"),
+                                Color.parseColor("#B92F5D")
+                        }
+                );
+
+        background.setCornerRadius(dp(30));
+
+        filter.setBackground(background);
+        filter.setTextColor(Color.WHITE);
+        filter.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+    }
+
+    private void setUnselectedFilter(TextView filter) {
+
+        GradientDrawable background =
+                new GradientDrawable();
+
+        background.setColor(
+                Color.parseColor("#FFFFE9F0")
+        );
+
+        background.setCornerRadius(dp(30));
+
+        filter.setBackground(background);
+
+        filter.setTextColor(
+                Color.parseColor("#8B5268")
+        );
+
+        filter.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.NORMAL
+        );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadItems();
+    }
+
+    @Override
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            Intent data) {
+
+        super.onActivityResult(
+                requestCode,
+                resultCode,
+                data
+        );
+
+        if (requestCode == 100) {
+            loadItems();
+        }
+    }
+
+    private void loadItems() {
+
+        if (auth.getCurrentUser() == null ||
+                categoryName == null) {
+            return;
+        }
+
+        String userId =
+                auth.getCurrentUser().getUid();
+
+        db.collection("items")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("category", categoryName)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+
+                    itemList.clear();
+
+                    itemList.addAll(
+                            querySnapshot.getDocuments()
+                    );
+
+                    showItems();
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(
                                 this,
-                                "שגיאה בטעינת הפריטים: " + e.getMessage(),
-                                Toast.LENGTH_LONG
+                                "לא הצלחנו לטעון את הפריטים",
+                                Toast.LENGTH_SHORT
                         ).show()
                 );
     }
 
-    private void addNewItemCard(
-            String titleText,
-            String imageFileName,
-            String itemId
-    ) {
+    private void showItems() {
 
-        float density = getResources()
-                .getDisplayMetrics().density;
+        itemsContainer.removeAllViews();
 
-        CardView cardView = new CardView(this);
+        List<DocumentSnapshot> displayedItems =
+                new ArrayList<>();
 
-        LinearLayout.LayoutParams cardParams =
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        (int) (85 * density)
+        for (DocumentSnapshot item : itemList) {
+
+            boolean isFavorite =
+                    Boolean.TRUE.equals(
+                            item.getBoolean("favorite")
+                    );
+
+            if (!showingFavorites || isFavorite) {
+                displayedItems.add(item);
+            }
+        }
+
+        if (displayedItems.isEmpty()) {
+
+            TextView emptyText = new TextView(this);
+
+            if (showingFavorites) {
+                emptyText.setText(
+                        "עדיין אין לך מועדפים ♡\n" +
+                                "סמני פריטים בלב כדי לשמור אותם כאן"
+                );
+            } else {
+                emptyText.setText(
+                        "עדיין אין כאן פריטים ♡\n" +
+                                "הוסיפי את הראשון שלך"
+                );
+            }
+
+            emptyText.setTextColor(
+                    Color.parseColor("#8B5268")
+            );
+
+            emptyText.setTextSize(19);
+            emptyText.setGravity(Gravity.CENTER);
+
+            emptyText.setPadding(
+                    dp(20),
+                    dp(50),
+                    dp(20),
+                    dp(50)
+            );
+
+            itemsContainer.addView(emptyText);
+            return;
+        }
+
+        LinearLayout row = null;
+
+        for (int i = 0; i < displayedItems.size(); i++) {
+
+            if (i % 2 == 0) {
+
+                row = new LinearLayout(this);
+
+                row.setOrientation(
+                        LinearLayout.HORIZONTAL
                 );
 
-        cardParams.setMargins(
-                0, 0, 0, (int) (12 * density)
+                row.setLayoutDirection(
+                        View.LAYOUT_DIRECTION_RTL
+                );
+
+                LinearLayout.LayoutParams rowParams =
+                        new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT
+                        );
+
+                rowParams.bottomMargin = dp(14);
+
+                itemsContainer.addView(
+                        row,
+                        rowParams
+                );
+            }
+
+            DocumentSnapshot item =
+                    displayedItems.get(i);
+
+            FrameLayout card = createItemCard(item);
+
+            int cardHeight =
+                    (i % 3 == 0) ? 235 : 205;
+
+            LinearLayout.LayoutParams cardParams =
+                    new LinearLayout.LayoutParams(
+                            0,
+                            dp(cardHeight),
+                            1
+                    );
+
+            cardParams.setMargins(
+                    dp(5),
+                    0,
+                    dp(5),
+                    0
+            );
+
+            if (row != null) {
+                row.addView(card, cardParams);
+            }
+        }
+
+        if (displayedItems.size() % 2 != 0 &&
+                row != null) {
+
+            View spacer = new View(this);
+
+            row.addView(
+                    spacer,
+                    new LinearLayout.LayoutParams(
+                            0,
+                            dp(205),
+                            1
+                    )
+            );
+        }
+    }
+
+    private FrameLayout createItemCard(
+            DocumentSnapshot item) {
+
+        FrameLayout card = new FrameLayout(this);
+
+        GradientDrawable cardBackground =
+                new GradientDrawable();
+
+        cardBackground.setColor(
+                Color.parseColor("#FFF9FB")
         );
 
-        cardView.setLayoutParams(cardParams);
-        cardView.setRadius(16 * density);
-        cardView.setCardElevation(2 * density);
-        cardView.setCardBackgroundColor(Color.WHITE);
-        cardView.setClickable(true);
-        cardView.setFocusable(true);
+        cardBackground.setCornerRadius(dp(24));
 
-        LinearLayout innerLayout = new LinearLayout(this);
-        innerLayout.setLayoutParams(
-                new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT
-                )
+        card.setBackground(cardBackground);
+        card.setClipToOutline(true);
+        card.setElevation(dp(3));
+
+        ImageView image = new ImageView(this);
+
+        image.setScaleType(
+                ImageView.ScaleType.CENTER_CROP
         );
 
-        innerLayout.setOrientation(LinearLayout.HORIZONTAL);
-        innerLayout.setGravity(Gravity.CENTER_VERTICAL);
-
-        int padding = (int) (12 * density);
-        innerLayout.setPadding(padding, padding, padding, padding);
-
-        ImageView img = new ImageView(this);
-        int imgSize = (int) (60 * density);
-
-        img.setLayoutParams(
-                new LinearLayout.LayoutParams(imgSize, imgSize)
+        image.setBackgroundColor(
+                Color.parseColor("#F4D6E1")
         );
 
-        img.setBackgroundColor(Color.parseColor("#FFE4EC"));
-        img.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        img.setImageResource(android.R.drawable.ic_menu_gallery);
+        FrameLayout.LayoutParams imageParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        FrameLayout.LayoutParams.MATCH_PARENT
+                );
 
-        if (imageFileName != null && !imageFileName.isEmpty()) {
+        card.addView(image, imageParams);
+
+        String imageFileName =
+                item.getString("imageFileName");
+
+        if (imageFileName != null &&
+                !imageFileName.isEmpty()) {
 
             File imageFile = new File(
-                    new File(getFilesDir(), "item_images"),
+                    new File(
+                            getFilesDir(),
+                            "item_images"
+                    ),
                     imageFileName
             );
 
             if (imageFile.exists()) {
-                Bitmap bitmap = BitmapFactory.decodeFile(
-                        imageFile.getAbsolutePath()
+                image.setImageURI(
+                        Uri.fromFile(imageFile)
                 );
-
-                if (bitmap != null) {
-                    img.setImageBitmap(bitmap);
-                }
             }
         }
 
-        innerLayout.addView(img);
+        View bottomOverlay = new View(this);
 
-        TextView tv = new TextView(this);
+        GradientDrawable overlayBackground =
+                new GradientDrawable();
 
-        LinearLayout.LayoutParams textParams =
-                new LinearLayout.LayoutParams(
-                        0,
-                        LinearLayout.LayoutParams.WRAP_CONTENT,
-                        1.0f
+        overlayBackground.setColor(
+                Color.parseColor("#FFFCE6ED")
+        );
+
+        overlayBackground.setCornerRadii(
+                new float[]{
+                        dp(18), dp(18),
+                        dp(18), dp(18),
+                        0, 0,
+                        0, 0
+                }
+        );
+
+        bottomOverlay.setBackground(
+                overlayBackground
+        );
+
+        FrameLayout.LayoutParams overlayParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        dp(54),
+                        Gravity.BOTTOM
                 );
 
-        textParams.setMargins(
-                (int) (16 * density), 0, 0, 0
+        card.addView(
+                bottomOverlay,
+                overlayParams
         );
 
-        tv.setLayoutParams(textParams);
-        tv.setText(titleText);
-        tv.setTextColor(Color.parseColor("#333333"));
-        tv.setTextSize(16);
-        tv.setTypeface(null, Typeface.BOLD);
+        TextView title = new TextView(this);
 
-        innerLayout.addView(tv);
+        String itemTitle =
+                item.getString("title");
 
-        ImageView star = new ImageView(this);
-        int starSize = (int) (24 * density);
-
-        star.setLayoutParams(
-                new LinearLayout.LayoutParams(starSize, starSize)
+        title.setText(
+                itemTitle == null ?
+                        "פריט ללא שם" :
+                        itemTitle
         );
 
-        star.setImageResource(android.R.drawable.btn_star);
-        innerLayout.addView(star);
+        title.setTextColor(
+                Color.parseColor("#57172D")
+        );
 
-        cardView.addView(innerLayout);
+        title.setTextSize(17);
 
-        cardView.setOnClickListener(v -> {
+        title.setTypeface(
+                Typeface.DEFAULT,
+                Typeface.BOLD
+        );
+
+        title.setGravity(
+                Gravity.CENTER_VERTICAL |
+                        Gravity.END
+        );
+
+        title.setPadding(
+                dp(12),
+                0,
+                dp(14),
+                0
+        );
+
+        title.setMaxLines(2);
+
+        FrameLayout.LayoutParams titleParams =
+                new FrameLayout.LayoutParams(
+                        FrameLayout.LayoutParams.MATCH_PARENT,
+                        dp(54),
+                        Gravity.BOTTOM
+                );
+
+        card.addView(title, titleParams);
+
+        boolean isFavorite =
+                Boolean.TRUE.equals(
+                        item.getBoolean("favorite")
+                );
+
+        TextView heart = new TextView(this);
+
+        heart.setText(
+                isFavorite ? "♥" : "♡"
+        );
+
+        heart.setTextColor(
+                Color.parseColor("#C83E6D")
+        );
+
+        heart.setTextSize(25);
+        heart.setGravity(Gravity.CENTER);
+        heart.setClickable(true);
+        heart.setFocusable(true);
+
+        GradientDrawable heartBackground =
+                new GradientDrawable();
+
+        heartBackground.setColor(
+                Color.parseColor("#FFFFF4F7")
+        );
+
+        heartBackground.setShape(
+                GradientDrawable.OVAL
+        );
+
+        heart.setBackground(heartBackground);
+
+        FrameLayout.LayoutParams heartParams =
+                new FrameLayout.LayoutParams(
+                        dp(42),
+                        dp(42),
+                        Gravity.TOP | Gravity.START
+                );
+
+        heartParams.setMargins(
+                dp(10),
+                dp(10),
+                0,
+                0
+        );
+
+        card.addView(heart, heartParams);
+
+        heart.setOnClickListener(v -> {
+
+            if (auth.getCurrentUser() == null) {
+                return;
+            }
+
+            boolean newFavorite = !isFavorite;
+
+            db.collection("items")
+                    .document(item.getId())
+                    .update("favorite", newFavorite)
+                    .addOnSuccessListener(unused -> {
+
+                        Toast.makeText(
+                                CategoryActivity.this,
+                                newFavorite ?
+                                        "נוסף למועדפים ♡" :
+                                        "הוסר מהמועדפים",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        loadItems();
+                    })
+                    .addOnFailureListener(e ->
+                            Toast.makeText(
+                                    CategoryActivity.this,
+                                    "לא הצלחנו לעדכן מועדפים",
+                                    Toast.LENGTH_SHORT
+                            ).show()
+                    );
+        });
+
+        card.setOnClickListener(v -> {
 
             Intent intent = new Intent(
                     CategoryActivity.this,
                     ItemDetailsActivity.class
             );
 
-            intent.putExtra("ITEM_ID", itemId);
-            itemLauncher.launch(intent);
+            intent.putExtra(
+                    "ITEM_ID",
+                    item.getId()
+            );
+
+            startActivity(intent);
         });
 
-        itemsContainer.addView(cardView);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadItemsFromFirebase();
+        return card;
     }
 }

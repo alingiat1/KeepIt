@@ -1,4 +1,3 @@
-
 package com.example.keepit;
 
 import android.content.Intent;
@@ -14,7 +13,7 @@ public class HomeActivity extends AppCompatActivity {
     private CardView cardShopping, cardPlaces, cardGifts,
             cardIdeas, cardRecipes, addCategoryCard;
 
-    private LinearLayout navProfile;
+    private LinearLayout navProfile, navFavorites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,12 +28,22 @@ public class HomeActivity extends AppCompatActivity {
         addCategoryCard = findViewById(R.id.addCategoryCard);
 
         navProfile = findViewById(R.id.navProfile);
+        navFavorites = findViewById(R.id.navFavorites);
 
-        cardShopping.setOnClickListener(v -> openCategory("לקנות"));
-        cardPlaces.setOnClickListener(v -> openCategory("מקומות"));
-        cardGifts.setOnClickListener(v -> openCategory("מתנות"));
-        cardIdeas.setOnClickListener(v -> openCategory("רעיונות"));
-        cardRecipes.setOnClickListener(v -> openCategory("מתכונים"));
+        cardShopping.setOnClickListener(v ->
+                openCategory("לקנות"));
+
+        cardPlaces.setOnClickListener(v ->
+                openCategory("מקומות"));
+
+        cardGifts.setOnClickListener(v ->
+                openCategory("מתנות"));
+
+        cardIdeas.setOnClickListener(v ->
+                openCategory("רעיונות"));
+
+        cardRecipes.setOnClickListener(v ->
+                openCategory("מתכונים"));
 
         addCategoryCard.setOnClickListener(v ->
                 Toast.makeText(
@@ -51,6 +60,14 @@ public class HomeActivity extends AppCompatActivity {
             );
             startActivity(intent);
         });
+
+        navFavorites.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    HomeActivity.this,
+                    FavoritesActivity.class
+            );
+            startActivity(intent);
+        });
     }
 
     private void openCategory(String categoryName) {
@@ -58,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
                 HomeActivity.this,
                 CategoryActivity.class
         );
+
         intent.putExtra("CATEGORY_NAME", categoryName);
         startActivity(intent);
     }

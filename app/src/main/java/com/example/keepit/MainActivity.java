@@ -1,12 +1,15 @@
+
 package com.example.keepit;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -19,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private EditText usernameInput;
     private EditText passwordInput;
+
     private Button loginButton;
     private Button registerButton;
 
@@ -29,93 +33,225 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // אתחול Firebase Auth
         mAuth = FirebaseAuth.getInstance();
 
-        // הגדרת שוליים למסך
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+        // התאמת המסך לשוליים של המערכת
+        View root = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+            );
+
+            v.setPadding(
+                    systemBars.left,
+                    systemBars.top,
+                    systemBars.right,
+                    systemBars.bottom
+            );
+
             return insets;
         });
 
-        // חיבור רכיבים מה-XML
+        // חיבור הרכיבים מה-XML
         usernameInput = findViewById(R.id.usernameInput);
         passwordInput = findViewById(R.id.passwordInput);
+
         loginButton = findViewById(R.id.loginButton);
         registerButton = findViewById(R.id.registerButton);
 
+        // ביטול צבע ברירת המחדל של Android
+        // כדי שהכפתורים לא יהפכו לסגולים
+        loginButton.setBackgroundTintList(null);
+        registerButton.setBackgroundTintList(null);
+
         // כפתור התחברות
         loginButton.setOnClickListener(v -> {
-            String email = usernameInput.getText().toString().trim();
-            String password = passwordInput.getText().toString().trim();
+
+            String email = usernameInput.getText()
+                    .toString()
+                    .trim();
+
+            String password = passwordInput.getText()
+                    .toString()
+                    .trim();
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(MainActivity.this, "נא למלא את כל השדות", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "נא למלא את כל השדות",
+                        Toast.LENGTH_SHORT
+                ).show();
+
             } else {
+
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "התחברת בהצלחה!", Toast.LENGTH_SHORT).show();
 
-                                // מעבר למסך הבית לאחר התחברות מוצלחת
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                            if (task.isSuccessful()) {
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        "התחברת בהצלחה!",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
+                                Intent intent = new Intent(
+                                        MainActivity.this,
+                                        HomeActivity.class
+                                );
+
                                 startActivity(intent);
                                 finish();
+
                             } else {
-                                Toast.makeText(MainActivity.this, "ההתחברות נכשלה: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                                String errorMessage = "ההתחברות נכשלה";
+
+                                if (task.getException() != null) {
+                                    errorMessage += ": "
+                                            + task.getException().getMessage();
+                                }
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        errorMessage,
+                                        Toast.LENGTH_LONG
+                                ).show();
                             }
                         });
             }
         });
 
-        // כפתור פתיחת חלון הרשמה
+        // פתיחת חלון הרשמה
         registerButton.setOnClickListener(v -> {
             showRegisterDialog();
         });
     }
 
-    // פונקציה להצגת החלון הקופץ להרשמה
+    // הצגת חלון ההרשמה
     private void showRegisterDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(this);
+
         LayoutInflater inflater = getLayoutInflater();
 
-        View dialogView = inflater.inflate(R.layout.dialogsingup, null);
+        View dialogView = inflater.inflate(
+                R.layout.dialogsingup,
+                null
+        );
+
         builder.setView(dialogView);
 
         AlertDialog dialog = builder.create();
 
-        EditText dUsername = dialogView.findViewById(R.id.dialogUsernameInput);
-        EditText dEmail = dialogView.findViewById(R.id.dialogEmailInput);
-        EditText dPassword = dialogView.findViewById(R.id.dialogPasswordInput);
-        EditText dConfirmPassword = dialogView.findViewById(R.id.dialogConfirmPasswordInput);
-        Button dRegisterBtn = dialogView.findViewById(R.id.dialogRegisterButton);
+        EditText dUsername = dialogView.findViewById(
+                R.id.dialogUsernameInput
+        );
+
+        EditText dEmail = dialogView.findViewById(
+                R.id.dialogEmailInput
+        );
+
+        EditText dPassword = dialogView.findViewById(
+                R.id.dialogPasswordInput
+        );
+
+        EditText dConfirmPassword = dialogView.findViewById(
+                R.id.dialogConfirmPasswordInput
+        );
+
+        Button dRegisterBtn = dialogView.findViewById(
+                R.id.dialogRegisterButton
+        );
+
+        // ביטול tint ברירת המחדל של כפתור ההרשמה
+        dRegisterBtn.setBackgroundTintList(null);
 
         dRegisterBtn.setOnClickListener(v -> {
-            String username = dUsername.getText().toString().trim();
-            String email = dEmail.getText().toString().trim();
-            String password = dPassword.getText().toString().trim();
-            String confirmPassword = dConfirmPassword.getText().toString().trim();
 
-            if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-                Toast.makeText(MainActivity.this, "נא למלא את כל השדות", Toast.LENGTH_SHORT).show();
+            String username = dUsername.getText()
+                    .toString()
+                    .trim();
+
+            String email = dEmail.getText()
+                    .toString()
+                    .trim();
+
+            String password = dPassword.getText()
+                    .toString()
+                    .trim();
+
+            String confirmPassword = dConfirmPassword.getText()
+                    .toString()
+                    .trim();
+
+            if (username.isEmpty()
+                    || email.isEmpty()
+                    || password.isEmpty()
+                    || confirmPassword.isEmpty()) {
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "נא למלא את כל השדות",
+                        Toast.LENGTH_SHORT
+                ).show();
+
             } else if (!password.equals(confirmPassword)) {
-                Toast.makeText(MainActivity.this, "הסיסמאות אינן תואמות", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "הסיסמאות אינן תואמות",
+                        Toast.LENGTH_SHORT
+                ).show();
+
             } else if (password.length() < 6) {
-                Toast.makeText(MainActivity.this, "הסיסמה חייבת להכיל לפחות 6 תווים", Toast.LENGTH_SHORT).show();
+
+                Toast.makeText(
+                        MainActivity.this,
+                        "הסיסמה חייבת להכיל לפחות 6 תווים",
+                        Toast.LENGTH_SHORT
+                ).show();
+
             } else {
+
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(this, task -> {
+
                             if (task.isSuccessful()) {
-                                Toast.makeText(MainActivity.this, "המשתמש נרשם בהצלחה!", Toast.LENGTH_SHORT).show();
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        "המשתמש נרשם בהצלחה!",
+                                        Toast.LENGTH_SHORT
+                                ).show();
+
                                 dialog.dismiss();
 
-                                // מעבר למסך הבית לאחר רישום מוצלח
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(
+                                        MainActivity.this,
+                                        HomeActivity.class
+                                );
+
                                 startActivity(intent);
                                 finish();
+
                             } else {
-                                Toast.makeText(MainActivity.this, "ההרשמה נכשלה: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
+                                String errorMessage = "ההרשמה נכשלה";
+
+                                if (task.getException() != null) {
+                                    errorMessage += ": "
+                                            + task.getException().getMessage();
+                                }
+
+                                Toast.makeText(
+                                        MainActivity.this,
+                                        errorMessage,
+                                        Toast.LENGTH_LONG
+                                ).show();
                             }
                         });
             }

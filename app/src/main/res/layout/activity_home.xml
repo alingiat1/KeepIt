@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#FFF5F8">
+    android:background="#FFF5F8"
+    android:layoutDirection="rtl">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,71 +18,100 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:paddingTop="18dp"
+            android:paddingBottom="20dp">
 
-            <!-- כותרת -->
+            <!-- לוגו וכותרת -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="24dp">
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp">
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="KeepIt"
-                    android:textColor="#D81B60"
+                    android:text="KeepIt♡"
+                    android:textColor="#8D3C60"
                     android:textSize="34sp"
-                    android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
-
-                <FrameLayout
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
-                    android:background="@android:drawable/dialog_holo_light_frame"
-                    android:backgroundTint="#FFE4EC">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:src="@android:drawable/ic_menu_myplaces"
-                        app:tint="#D81B60" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <!-- חיפוש -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/editbox_background_normal"
-                android:backgroundTint="#FFFFFF"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:layout_marginBottom="28dp"
-                android:elevation="1dp">
-
-                <ImageView
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    app:tint="#D81B60" />
+                    android:fontFamily="cursive"
+                    android:textStyle="italic"
+                    android:gravity="center" />
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="חיפוש..."
-                    android:textColor="#B0BEC5"
-                    android:textSize="16sp"
-                    android:layout_marginStart="12dp"
-                    android:fontFamily="sans-serif-medium" />
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:gravity="center"
+                    android:text="♡"
+                    android:textColor="#B84D79"
+                    android:textSize="27sp"
+                    android:background="#FBE0EB" />
             </LinearLayout>
 
-            <!-- קטגוריות -->
+            <!-- באנר ברכה -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="112dp"
+                android:layout_marginBottom="22dp"
+                app:cardBackgroundColor="#F7D6E4"
+                app:cardCornerRadius="26dp"
+                app:cardElevation="2dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="ברוכה הבאה"
+                            android:textColor="#642B46"
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="כל הדברים שאת אוהבת, במקום אחד ♡"
+                            android:textColor="#95506F"
+                            android:textSize="14sp"
+                            android:layout_marginTop="5dp" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|end"
+                        android:layout_margin="12dp"
+                        android:text="✧"
+                        android:textColor="#FFFFFF"
+                        android:textSize="25sp" />
+
+                </FrameLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- כותרת קטגוריות -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="הקטגוריות שלי"
+                android:textColor="#5E2E46"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:layout_marginBottom="12dp" />
+
+            <!-- תמונות הקטגוריות -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -89,191 +119,191 @@
                 android:alignmentMode="alignMargins"
                 android:columnOrderPreserved="false">
 
+                <!-- לקנות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardShopping"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_margin="6dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#D81B60" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/category_shopping"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="לקנות" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:padding="10dp"
                             android:text="לקנות"
-                            android:textColor="#D81B60"
+                            android:textColor="#5B2C43"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
+                            android:background="#F7FFFFFF" />
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- מקומות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPlaces"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_margin="6dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:src="@android:drawable/ic_menu_mapmode"
-                            app:tint="#D81B60" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/category_places"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="מקומות" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:padding="10dp"
                             android:text="מקומות"
-                            android:textColor="#D81B60"
+                            android:textColor="#5B2C43"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
+                            android:background="#F7FFFFFF" />
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- מתנות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardGifts"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_margin="6dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:src="@android:drawable/ic_menu_slideshow"
-                            app:tint="#D81B60" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/category_gifts"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="מתנות" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:padding="10dp"
                             android:text="מתנות"
-                            android:textColor="#D81B60"
+                            android:textColor="#5B2C43"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
+                            android:background="#F7FFFFFF" />
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- רעיונות -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardIdeas"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_margin="6dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:src="@android:drawable/ic_menu_info_details"
-                            app:tint="#D81B60" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/category_ideas"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="רעיונות" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:padding="10dp"
                             android:text="רעיונות"
-                            android:textColor="#D81B60"
+                            android:textColor="#5B2C43"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
+                            android:background="#F7FFFFFF" />
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- מתכונים -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardRecipes"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="3dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_margin="6dp"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
-                    <LinearLayout
+                    <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:layout_height="match_parent">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:src="@android:drawable/ic_menu_edit"
-                            app:tint="#D81B60" />
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/category_recipes"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="מתכונים" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:gravity="center"
+                            android:padding="10dp"
                             android:text="מתכונים"
-                            android:textColor="#D81B60"
+                            android:textColor="#5B2C43"
                             android:textSize="16sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium"
-                            android:layout_marginTop="10dp" />
-                    </LinearLayout>
+                            android:background="#F7FFFFFF" />
+                    </FrameLayout>
                 </androidx.cardview.widget.CardView>
 
+                <!-- הוספת קטגוריה -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/addCategoryCard"
                     android:layout_width="0dp"
-                    android:layout_height="110dp"
+                    android:layout_height="145dp"
                     android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="4dp"
-                    app:cardBackgroundColor="#D81B60">
+                    android:layout_margin="6dp"
+                    app:cardBackgroundColor="#E9A7C3"
+                    app:cardCornerRadius="22dp"
+                    app:cardElevation="3dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -282,13 +312,13 @@
                         android:gravity="center">
 
                         <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="60dp"
+                            android:layout_height="60dp"
+                            android:gravity="center"
                             android:text="+"
                             android:textColor="#FFFFFF"
-                            android:textSize="36sp"
-                            android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium" />
+                            android:textSize="42sp"
+                            android:background="#D778A0" />
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -297,21 +327,34 @@
                             android:textColor="#FFFFFF"
                             android:textSize="15sp"
                             android:textStyle="bold"
-                            android:fontFamily="sans-serif-medium" />
+                            android:layout_marginTop="12dp" />
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
 
             </GridLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="שמרי את הדברים הקטנים שעושים לך טוב ♡"
+                android:textColor="#B87A98"
+                android:textSize="13sp"
+                android:layout_marginTop="18dp" />
+
         </LinearLayout>
     </ScrollView>
 
     <!-- ניווט תחתון -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="65dp"
+        android:layout_height="70dp"
         android:background="#FFFFFF"
         android:orientation="horizontal"
-        android:elevation="12dp">
+        android:gravity="center_vertical"
+        android:elevation="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp">
 
         <!-- בית -->
         <LinearLayout
@@ -321,23 +364,70 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_compass"
-                app:tint="#D81B60" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="⌂"
+                android:textColor="#C42F6D"
+                android:textSize="27sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="בית"
-                android:textColor="#D81B60"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:fontFamily="sans-serif-medium" />
+                android:textColor="#C42F6D"
+                android:textSize="11sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- מועדפים -->
+        <LinearLayout
+            android:id="@+id/navFavorites"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="♡"
+                android:textColor="#C7A0B4"
+                android:textSize="25sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="מועדפים"
+                android:textColor="#C7A0B4"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <!-- הוספת פריט -->
+        <androidx.cardview.widget.CardView
+            android:id="@+id/homeAddButton"
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            app:cardBackgroundColor="#D72D78"
+            app:cardCornerRadius="27dp"
+            app:cardElevation="4dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="+"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+        <!-- תזכורות -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
@@ -345,22 +435,22 @@
             android:orientation="vertical"
             android:gravity="center">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_manage"
-                app:tint="#B0BEC5" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="♧"
+                android:textColor="#C7A0B4"
+                android:textSize="25sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="מועדפים"
-                android:textColor="#B0BEC5"
-                android:textSize="12sp"
-                android:fontFamily="sans-serif-medium" />
+                android:text="תזכורות"
+                android:textColor="#C7A0B4"
+                android:textSize="11sp" />
         </LinearLayout>
 
-        <!-- פרופיל: מחובר ל-ProfileActivity דרך HomeActivity -->
+        <!-- פרופיל -->
         <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
@@ -371,19 +461,19 @@
             android:clickable="true"
             android:focusable="true">
 
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_menu_myplaces"
-                app:tint="#B0BEC5" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="♙"
+                android:textColor="#C7A0B4"
+                android:textSize="25sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="פרופיל"
-                android:textColor="#B0BEC5"
-                android:textSize="12sp"
-                android:fontFamily="sans-serif-medium" />
+                android:textColor="#C7A0B4"
+                android:textSize="11sp" />
         </LinearLayout>
 
     </LinearLayout>
